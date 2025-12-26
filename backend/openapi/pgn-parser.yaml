@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: PGN Parser API
+  version: 1.0.0
+
+paths:
+  /pgn/separated:
+    post:
+      summary: Convert a PGN into separated PGN
+      operationId: convertPgnToSeparated
+      security:
+        - basicAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PgnRequest'
+      responses:
+        '200':
+          description: PGN converted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeparatedPgnResponse'
+  /pgn/combined:
+    post:
+      summary: Convert a PGN into combined PGN
+      operationId: convertPgnToCombined
+      security:
+        - basicAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PgnRequest'
+      responses:
+        '200':
+          description: PGN converted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CombinedPgnResponse'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    PgnRequest:
+      type: object
+      properties:
+        pgn:
+          type: string
+          example: "1. e4 e5 2. Nf3 (2.Nc3) 2...Nc6"
+    SeparatedPgnResponse:
+      type: object
+      properties:
+        variations:
+          type: array
+          items:
+            type: string
+      example:
+        variations:
+          - "1. e4 e5 2. Nf3 Nc6"
+          - "1. e4 e5 2. Nc3"
+    CombinedPgnResponse:
+      type: object
+      properties:
+        combined:
+          type: string
+          example: "1. e5 e5 2. Nf3 Nc6\n\n1.e4 e5 2. Nc3"

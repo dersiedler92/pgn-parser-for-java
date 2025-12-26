@@ -1,0 +1,12 @@
+.gitignore
+.npmignore
+api.ts
+base.ts
+common.ts
+configuration.ts
+docs/CombinedPgnResponse.md
+docs/DefaultApi.md
+docs/PgnRequest.md
+docs/SeparatedPgnResponse.md
+git_push.sh
+index.ts
