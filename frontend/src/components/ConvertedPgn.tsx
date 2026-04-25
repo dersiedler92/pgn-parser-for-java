@@ -1,9 +1,24 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "./ConvertedPgn.css";
 
 export default function ConvertedPgn() {
   const location = useLocation();
+  const navigate = useNavigate();
   const combinedPgn: string | undefined = location.state?.combinedPgn;
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopy = async () => {
+    if (combinedPgn) {
+      try {
+        await navigator.clipboard.writeText(combinedPgn);
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy:", err);
+      }
+    }
+  };
 
   return (
     <div className="converted-pgn-layout">
@@ -21,7 +36,21 @@ export default function ConvertedPgn() {
 
       <main className="container">
         {combinedPgn ? (
-          <pre className="pgn-display">{combinedPgn}</pre>
+          <>
+            <pre className="pgn-display">{combinedPgn}</pre>
+            <div className="button-row">
+              <button className="btn btn-secondary" onClick={() => navigate("/")}>
+                ← Back
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleCopy}
+                disabled={!combinedPgn}
+              >
+                {copySuccess ? "✓ Copied!" : "Copy PGN"}
+              </button>
+            </div>
+          </>
         ) : (
           <p className="no-data-message">No PGN data to display.</p>
         )}

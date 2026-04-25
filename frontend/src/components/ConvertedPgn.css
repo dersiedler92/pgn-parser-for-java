@@ -75,3 +75,48 @@
   font-size: 1.2rem;
   text-align: center;
 }
+
+/* Button row container - positioned below the text */
+.button-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 1rem;
+}
+
+/* Button styles */
+.btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary button - Chess theme tan/gold */
+.btn-primary {
+  background-color: #d1b899;
+  color: #1e1e1e;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #c4a882;
+}
+
+/* Secondary button - Dark gray */
+.btn-secondary {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+.btn-secondary:hover {
+  background-color: #555;
+}
