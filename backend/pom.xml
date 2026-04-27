@@ -34,7 +34,7 @@
     <lombok.version>1.18.38</lombok.version>
     <junit-jupiter-engine.version>5.13.4</junit-jupiter-engine.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-    <openapi-generator-maven-plugin.version>7.15.0</openapi-generator-maven-plugin.version>
+    <openapi-generator-maven-plugin.version>7.21.0</openapi-generator-maven-plugin.version>
     <swagger-annotations.version>2.2.36</swagger-annotations.version>
     <springdoc-openapi-starter-webmvc-ui.version>2.8.13</springdoc-openapi-starter-webmvc-ui.version>
     <swagger-parser.version>2.1.33</swagger-parser.version>
@@ -61,6 +61,10 @@
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -145,8 +149,11 @@
             <groupId>org.openapitools</groupId>
             <artifactId>openapi-generator-maven-plugin</artifactId>
             <version>${openapi-generator-maven-plugin.version}</version>
+
             <executions>
+                <!-- Your own API: Spring server interfaces/controllers -->
                 <execution>
+                    <id>generate-pgn-parser-api</id>
                     <goals>
                         <goal>generate</goal>
                     </goals>
@@ -154,12 +161,50 @@
                         <inputSpec>${project.basedir}/openapi/pgn-parser.yaml</inputSpec>
                         <generatorName>spring</generatorName>
                         <library>spring-boot</library>
+
                         <apiPackage>io.alpa.pgnparser.api</apiPackage>
                         <modelPackage>io.alpa.pgnparser.api.model</modelPackage>
+
                         <generateSupportingFiles>true</generateSupportingFiles>
+                        <generateApiTests>false</generateApiTests>
+                        <generateModelTests>false</generateModelTests>
+                        <generateApiDocumentation>false</generateApiDocumentation>
+                        <generateModelDocumentation>false</generateModelDocumentation>
+
                         <configOptions>
                             <useSpringBoot3>true</useSpringBoot3>
                             <interfaceOnly>true</interfaceOnly>
+                        </configOptions>
+                    </configuration>
+                </execution>
+
+                <!-- Lichess: Java client, NOT Spring server controllers -->
+                <execution>
+                    <id>generate-lichess-client</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                        <inputSpec>${project.basedir}/openapi/lichess.json</inputSpec>
+                        <generatorName>java</generatorName>
+                        <library>webclient</library>
+
+                        <apiPackage>io.alpa.pgnparser.lichess.api</apiPackage>
+                        <modelPackage>io.alpa.pgnparser.lichess.model</modelPackage>
+                        <invokerPackage>io.alpa.pgnparser.lichess.client</invokerPackage>
+
+                        <skipValidateSpec>true</skipValidateSpec>
+
+                        <generateApiTests>false</generateApiTests>
+                        <generateModelTests>false</generateModelTests>
+                        <generateApiDocumentation>false</generateApiDocumentation>
+                        <generateModelDocumentation>false</generateModelDocumentation>
+
+                        <configOptions>
+                            <dateLibrary>java8</dateLibrary>
+                            <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                            <enumUnknownDefaultCase>true</enumUnknownDefaultCase>
+                            <useJakartaEe>true</useJakartaEe>
                         </configOptions>
                     </configuration>
                 </execution>

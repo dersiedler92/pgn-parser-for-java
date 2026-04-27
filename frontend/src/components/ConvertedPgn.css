@@ -65,7 +65,7 @@
   word-break: break-all;
   
   /* --- KEY CHANGES --- */
-  max-height: 70vh; /* NEW: Caps the height at 70% of the viewport height */
+  max-height: 60vh; /* NEW: Caps the height at 60% of the viewport height */
   overflow: auto;   /* UPDATED: Handles both vertical and horizontal scroll */
 }
 
@@ -83,6 +83,53 @@
   width: 100%;
   max-width: 900px;
   margin-top: 1rem;
+}
+
+/* Study name input row */
+.study-name-row {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 1rem;
+}
+
+.study-name-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  color: #e0e0e0;
+  background-color: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.study-name-input:focus {
+  outline: none;
+  border-color: #d1b899;
+}
+
+.study-name-input::placeholder {
+  color: #888;
+}
+
+/* Color select dropdown */
+.color-select {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  color: #e0e0e0;
+  background-color: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 6px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.color-select:focus {
+  outline: none;
+  border-color: #d1b899;
 }
 
 /* Button styles */
@@ -119,4 +166,21 @@
 
 .btn-secondary:hover {
   background-color: #555;
+}
+
+.study-link-row {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.study-link {
+  color: #d1b899;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.study-link:hover {
+  color: #c4a882;
 }

@@ -32,6 +32,24 @@ export interface PgnRequest {
 export interface SeparatedPgnResponse {
     'variations'?: Array<string>;
 }
+export interface CreateLichessStudyRequest {
+    'pgn'?: string;
+    'studyName'?: string;
+    'color'?: "white" | "black";
+}
+export interface CreateLichessStudyResponse {
+    'studyId'?: string;
+    'url'?: string;
+}
+export interface CreateLichessStudyRequest {
+    'pgn'?: string;
+    'studyName'?: string;
+    'color'?: "white" | "black";
+}
+export interface CreateLichessStudyResponse {
+    'studyId'?: string;
+    'url'?: string;
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -118,6 +136,46 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Create a Lichess study with the provided PGN
+         * @param {CreateLichessStudyRequest} createLichessStudyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createStudyAndUploadPgn: async (createLichessStudyRequest: CreateLichessStudyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createLichessStudyRequest' is not null or undefined
+            assertParamExists('createStudyAndUploadPgn', 'createLichessStudyRequest', createLichessStudyRequest)
+            const localVarPath = `/study`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createLichessStudyRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -153,6 +211,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.convertPgnToSeparated']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Create a Lichess study with the provided PGN
+         * @param {CreateLichessStudyRequest} createLichessStudyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createStudyAndUploadPgn(createLichessStudyRequest: CreateLichessStudyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateLichessStudyResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createStudyAndUploadPgn(createLichessStudyRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.createStudyAndUploadPgn']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -182,6 +253,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         convertPgnToSeparated(pgnRequest: PgnRequest, options?: RawAxiosRequestConfig): AxiosPromise<SeparatedPgnResponse> {
             return localVarFp.convertPgnToSeparated(pgnRequest, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Create a Lichess study with the provided PGN
+         * @param {CreateLichessStudyRequest} createLichessStudyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createStudyAndUploadPgn(createLichessStudyRequest: CreateLichessStudyRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreateLichessStudyResponse> {
+            return localVarFp.createStudyAndUploadPgn(createLichessStudyRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -209,6 +290,16 @@ export class DefaultApi extends BaseAPI {
      */
     public convertPgnToSeparated(pgnRequest: PgnRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).convertPgnToSeparated(pgnRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Create a Lichess study with the provided PGN
+     * @param {CreateLichessStudyRequest} createLichessStudyRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createStudyAndUploadPgn(createLichessStudyRequest: CreateLichessStudyRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).createStudyAndUploadPgn(createLichessStudyRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

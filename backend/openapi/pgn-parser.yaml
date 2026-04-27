@@ -42,6 +42,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CombinedPgnResponse'
+  /study:
+    post:
+      summary: Create a Lichess study with the provided PGN
+      operationId: createStudyAndUploadPgn
+      security:
+        - basicAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLichessStudyRequest'
+      responses:
+        '200':
+          description: Study created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateLichessStudyResponse'
+
 
 components:
   securitySchemes:
@@ -73,3 +93,23 @@ components:
         combined:
           type: string
           example: "1. e5 e5 2. Nf3 Nc6\n\n1.e4 e5 2. Nc3"
+    CreateLichessStudyRequest:
+      type: object
+      properties:
+        pgn:
+          type: string
+        studyName:
+          type: string
+        color:
+          type: string
+          enum:
+            - white
+            - black
+
+    CreateLichessStudyResponse:
+      type: object
+      properties:
+        studyId:
+          type: string
+        url:
+          type: string

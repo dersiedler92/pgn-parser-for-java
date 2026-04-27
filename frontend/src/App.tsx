@@ -17,13 +17,13 @@ function App() {
   });
   const api = new DefaultApi(configuration);
 
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${textarea.scrollHeight}px`;
-    }
-  }, [pgn]);
+useEffect(() => {
+  const textarea = textareaRef.current;
+  if (textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.max(textarea.scrollHeight, 120)}px`;
+  }
+}, [pgn]);
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setPgn(event.target.value);
@@ -62,7 +62,7 @@ function App() {
             onChange={handleInputChange}
             placeholder="Input PGN here..."
             className="auto-resize-textarea"
-            rows={1}
+            rows={6}
           />
           <div className="button-group">
             <button className="btn" onClick={handleConvert}>
