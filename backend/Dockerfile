@@ -1,10 +1,13 @@
 FROM maven:3.9-eclipse-temurin-25 AS build
 WORKDIR /workspace
+
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src ./src
 COPY openapi ./openapi
+
+RUN chmod +x mvnw
 RUN ./mvnw -B -DskipTests package
 
 FROM eclipse-temurin:25-jre-ubi10-minimal

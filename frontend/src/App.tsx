@@ -11,7 +11,7 @@ function App() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const configuration = new Configuration({
-    basePath: "http://localhost:8080/api",
+    basePath: "/api",
     username: "alpa",
     password: "secret123",
   });
