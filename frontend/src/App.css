@@ -28,6 +28,22 @@ body, html, #root {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   z-index: 10;
   gap: 1rem;
+  position: relative;
+}
+
+.auth-controls {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.auth-username {
+  color: #d1b899;
 }
 
 .title-bar h1 {

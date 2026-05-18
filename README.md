@@ -61,6 +61,29 @@ npm test
 - Main endpoints:
 	- `POST /api/pgn/separated` – Convert PGN to separated format
 	- `POST /api/pgn/combined` – Convert PGN to combined format
+	- `POST /api/study` – Upload PGN as a new Lichess study (requires Lichess OAuth session)
+	- `GET /api/auth/lichess/login` – Start the Lichess OAuth flow (302 to Lichess)
+	- `GET /api/auth/lichess/callback` – OAuth redirect URI
+	- `GET /api/auth/me` – Returns `{ authenticated, username? }`
+	- `POST /api/auth/logout` – Revoke the Lichess token and invalidate the session
+
+## Lichess OAuth
+
+The backend implements OAuth 2.0 Authorization Code + PKCE against Lichess. Lichess is a public
+client (no client secret); the configured `client_id` is the application name shown to the user on
+the Lichess consent page. The access token is held in the user's `HttpSession` only — there is no
+database. The session is identified by the `JSESSIONID` cookie, which the frontend sends thanks to
+axios `withCredentials: true`.
+
+Configurable via environment variables (defaults in `application.properties`):
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `LICHESS_CLIENT_ID` | `pgn-parser-dev` | OAuth client identifier (shown to user) |
+| `LICHESS_REDIRECT_URI` | `http://localhost:8080/api/auth/lichess/callback` | OAuth redirect URI |
+| `APP_FRONTEND_URL` | `http://localhost:5173` | Where the callback redirects on completion |
+
+Requested scopes: `study:read`, `study:write`.
 
 ## Usage
 
@@ -68,7 +91,7 @@ npm test
 2. Open frontend in browser.
 3. Paste PGN text.
 4. Extract split PGN.
-5. Upload split PGN to Lichess.
+5. Click *Sign in with Lichess* (one-time per session), then *Upload to Lichess*.
 6. API can be used directly from Swagger UI or any API client like Postman (see OpenAPI docs for request/response formats).
 
 ## Outlook
@@ -76,7 +99,6 @@ npm test
 As this project was created to prove my coding proficiency and systemic understanding, it lacks
 features that may be included in future iterations, among which would be:
 
-- Implementation of Lichess OAuth2 authorization flow to use Lichess API to upload Study automatically
 - Connection of persistence via Spring JPA and PostgreSQL in order to save both user-specific tokens and converted PGN
 - Enhancement of UX (especially addition of chessboard, which is a lot of work)
 - Deployment of code to provide the functionality to wider chess audience
@@ -84,5 +106,5 @@ features that may be included in future iterations, among which would be:
 ## Development Notes
 
 - Backend and frontend are decoupled; API client is auto-generated from OpenAPI spec.
-- No database required; all PGN processing is in-memory.
-- Authentication: Basic Auth (default user: `alpa`, password: `secret123`).
+- No database required; all PGN processing is in-memory, and the Lichess OAuth token lives in the user's HTTP session.
+- Authentication: HTTP Basic Auth (default user: `alpa`, password: `secret123`) gates `/api/**` for non-OAuth endpoints; the Lichess OAuth session is layered on top for `/api/study`.
