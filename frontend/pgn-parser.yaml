@@ -62,6 +62,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateLichessStudyResponse'
 
+  /auth/lichess/login:
+    get:
+      tags: [ auth ]
+      summary: Start the Lichess OAuth (Authorization Code + PKCE) flow
+      operationId: lichessLogin
+      responses:
+        '302':
+          description: Redirect to the Lichess authorization endpoint
+          headers:
+            Location:
+              schema: { type: string }
+  /auth/lichess/callback:
+    get:
+      tags: [ auth ]
+      summary: OAuth redirect URI; exchanges code for token and stores it in the session
+      operationId: lichessCallback
+      parameters:
+        - in: query
+          name: code
+          schema: { type: string }
+        - in: query
+          name: state
+          schema: { type: string }
+        - in: query
+          name: error
+          schema: { type: string }
+      responses:
+        '302':
+          description: Redirect back to the configured frontend URL
+          headers:
+            Location:
+              schema: { type: string }
+  /auth/logout:
+    post:
+      tags: [ auth ]
+      summary: Invalidate the Lichess session and revoke the token at Lichess
+      operationId: logout
+      responses:
+        '204':
+          description: Logged out
+  /auth/me:
+    get:
+      tags: [ auth ]
+      summary: Current Lichess authentication state
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthStatusResponse'
+
 
 components:
   securitySchemes:
@@ -112,4 +165,13 @@ components:
         studyId:
           type: string
         url:
+          type: string
+
+    AuthStatusResponse:
+      type: object
+      required: [ authenticated ]
+      properties:
+        authenticated:
+          type: boolean
+        username:
           type: string

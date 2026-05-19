@@ -1,0 +1,18 @@
+# Default: let git handle text normalization.
+* text=auto
+
+# Shell scripts and Maven wrapper must always use LF, even on Windows checkouts —
+# otherwise Linux containers fail with "/bin/sh: ./mvnw: not found".
+*.sh        text eol=lf
+mvnw        text eol=lf
+**/mvnw     text eol=lf
+gradlew     text eol=lf
+**/gradlew  text eol=lf
+
+# Binary files
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.jar       binary

@@ -4,7 +4,11 @@ api.ts
 base.ts
 common.ts
 configuration.ts
+docs/AuthApi.md
+docs/AuthStatusResponse.md
 docs/CombinedPgnResponse.md
+docs/CreateLichessStudyRequest.md
+docs/CreateLichessStudyResponse.md
 docs/DefaultApi.md
 docs/PgnRequest.md
 docs/SeparatedPgnResponse.md

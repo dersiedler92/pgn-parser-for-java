@@ -23,8 +23,29 @@ import type { RequestArgs } from './base';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
+export interface AuthStatusResponse {
+    'authenticated': boolean;
+    'username'?: string;
+}
 export interface CombinedPgnResponse {
     'combined'?: string;
+}
+export interface CreateLichessStudyRequest {
+    'pgn'?: string;
+    'studyName'?: string;
+    'color'?: CreateLichessStudyRequestColorEnum;
+}
+
+export const CreateLichessStudyRequestColorEnum = {
+    White: 'white',
+    Black: 'black'
+} as const;
+
+export type CreateLichessStudyRequestColorEnum = typeof CreateLichessStudyRequestColorEnum[keyof typeof CreateLichessStudyRequestColorEnum];
+
+export interface CreateLichessStudyResponse {
+    'studyId'?: string;
+    'url'?: string;
 }
 export interface PgnRequest {
     'pgn'?: string;
@@ -32,24 +53,307 @@ export interface PgnRequest {
 export interface SeparatedPgnResponse {
     'variations'?: Array<string>;
 }
-export interface CreateLichessStudyRequest {
-    'pgn'?: string;
-    'studyName'?: string;
-    'color'?: "white" | "black";
+
+/**
+ * AuthApi - axios parameter creator
+ */
+export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Current Lichess authentication state
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCurrentUser: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/me`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary OAuth redirect URI; exchanges code for token and stores it in the session
+         * @param {string} [code] 
+         * @param {string} [state] 
+         * @param {string} [error] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        lichessCallback: async (code?: string, state?: string, error?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/lichess/callback`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (code !== undefined) {
+                localVarQueryParameter['code'] = code;
+            }
+
+            if (state !== undefined) {
+                localVarQueryParameter['state'] = state;
+            }
+
+            if (error !== undefined) {
+                localVarQueryParameter['error'] = error;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Start the Lichess OAuth (Authorization Code + PKCE) flow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        lichessLogin: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/lichess/login`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Invalidate the Lichess session and revoke the token at Lichess
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        logout: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/logout`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AuthApi - functional programming interface
+ */
+export const AuthApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AuthApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Current Lichess authentication state
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCurrentUser(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCurrentUser(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.getCurrentUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary OAuth redirect URI; exchanges code for token and stores it in the session
+         * @param {string} [code] 
+         * @param {string} [state] 
+         * @param {string} [error] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async lichessCallback(code?: string, state?: string, error?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.lichessCallback(code, state, error, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.lichessCallback']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Start the Lichess OAuth (Authorization Code + PKCE) flow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async lichessLogin(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.lichessLogin(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.lichessLogin']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Invalidate the Lichess session and revoke the token at Lichess
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async logout(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.logout(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.logout']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AuthApi - factory interface
+ */
+export const AuthApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AuthApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Current Lichess authentication state
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCurrentUser(options?: RawAxiosRequestConfig): AxiosPromise<AuthStatusResponse> {
+            return localVarFp.getCurrentUser(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary OAuth redirect URI; exchanges code for token and stores it in the session
+         * @param {string} [code] 
+         * @param {string} [state] 
+         * @param {string} [error] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        lichessCallback(code?: string, state?: string, error?: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.lichessCallback(code, state, error, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Start the Lichess OAuth (Authorization Code + PKCE) flow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        lichessLogin(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.lichessLogin(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Invalidate the Lichess session and revoke the token at Lichess
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        logout(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.logout(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AuthApi - object-oriented interface
+ */
+export class AuthApi extends BaseAPI {
+    /**
+     * 
+     * @summary Current Lichess authentication state
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getCurrentUser(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).getCurrentUser(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary OAuth redirect URI; exchanges code for token and stores it in the session
+     * @param {string} [code] 
+     * @param {string} [state] 
+     * @param {string} [error] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public lichessCallback(code?: string, state?: string, error?: string, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).lichessCallback(code, state, error, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Start the Lichess OAuth (Authorization Code + PKCE) flow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public lichessLogin(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).lichessLogin(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Invalidate the Lichess session and revoke the token at Lichess
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public logout(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).logout(options).then((request) => request(this.axios, this.basePath));
+    }
 }
-export interface CreateLichessStudyResponse {
-    'studyId'?: string;
-    'url'?: string;
-}
-export interface CreateLichessStudyRequest {
-    'pgn'?: string;
-    'studyName'?: string;
-    'color'?: "white" | "black";
-}
-export interface CreateLichessStudyResponse {
-    'studyId'?: string;
-    'url'?: string;
-}
+
+
 
 /**
  * DefaultApi - axios parameter creator
@@ -291,6 +595,7 @@ export class DefaultApi extends BaseAPI {
     public convertPgnToSeparated(pgnRequest: PgnRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).convertPgnToSeparated(pgnRequest, options).then((request) => request(this.axios, this.basePath));
     }
+
     /**
      * 
      * @summary Create a Lichess study with the provided PGN

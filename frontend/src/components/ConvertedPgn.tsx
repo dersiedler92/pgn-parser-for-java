@@ -1,11 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
-import { DefaultApi, Configuration } from "../api-client";
+import { useState } from "react";
+import { api } from "../api-client/client";
+import { useAuth } from "../auth/useAuth";
 import "./ConvertedPgn.css";
 
 export default function ConvertedPgn() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { authenticated, loginWithLichess } = useAuth();
 
   const combinedPgn = location.state?.combinedPgn as string | undefined;
 
@@ -15,16 +17,6 @@ export default function ConvertedPgn() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [studyUrl, setStudyUrl] = useState<string | null>(null);
-
-  const api = useMemo(() => {
-    const configuration = new Configuration({
-      basePath: "/api",
-      username: "alpa",
-      password: "secret123",
-    });
-
-    return new DefaultApi(configuration);
-  }, []);
 
   const handleCopy = async () => {
     if (!combinedPgn) return;
@@ -40,6 +32,11 @@ export default function ConvertedPgn() {
 
   const handleUploadToLichess = async () => {
     if (!combinedPgn || !studyName.trim() || uploading) return;
+
+    if (!authenticated) {
+      loginWithLichess();
+      return;
+    }
 
     setUploading(true);
     setUploadSuccess(false);
@@ -137,7 +134,9 @@ export default function ConvertedPgn() {
                   ? "Uploading..."
                   : uploadSuccess
                     ? "✓ Uploaded!"
-                    : "Upload to Lichess"}
+                    : authenticated
+                      ? "Upload to Lichess"
+                      : "Sign in & Upload to Lichess"}
               </button>
             </div>
 

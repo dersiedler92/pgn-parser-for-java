@@ -13,17 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class StudyController implements StudyApi {
 
-    private final LichessStudiesClient studiesClient;
+  private final LichessStudiesClient studiesClient;
 
-    public StudyController(LichessStudiesClient studiesClient) {
-        this.studiesClient = studiesClient;
-    }
+  public StudyController(LichessStudiesClient studiesClient) {
+    this.studiesClient = studiesClient;
+  }
 
-    @Override
-    public ResponseEntity<CreateLichessStudyResponse> createStudyAndUploadPgn(CreateLichessStudyRequest request) {
-        CreateLichessStudyResponse response = studiesClient.createStudyWithPgn(request);
-        return ResponseEntity.ok(response);
-    }
-
-
+  @Override
+  public ResponseEntity<CreateLichessStudyResponse> createStudyAndUploadPgn(
+      CreateLichessStudyRequest request) {
+    CreateLichessStudyResponse response = studiesClient.createStudyWithPgn(request);
+    return ResponseEntity.ok(response);
+  }
 }
