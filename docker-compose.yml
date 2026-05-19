@@ -5,6 +5,10 @@ services:
       dockerfile: Dockerfile
     expose:
       - "8080"
+    environment:
+      LICHESS_CLIENT_ID: ${LICHESS_CLIENT_ID:-pgn-parser-dev}
+      LICHESS_REDIRECT_URI: ${LICHESS_REDIRECT_URI:-http://localhost/api/auth/lichess/callback}
+      APP_FRONTEND_URL: ${APP_FRONTEND_URL:-http://localhost}
     restart: unless-stopped
 
   frontend:
