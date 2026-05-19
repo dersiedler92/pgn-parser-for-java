@@ -12,17 +12,6 @@ export default defineConfig({
       },
     },
   },
-  build: {
-    target: 'es2020',
-    sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'axios'],
-        },
-      },
-    },
-  },
   test: {
     globals: true,
     environment: 'jsdom',
