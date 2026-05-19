@@ -5,11 +5,14 @@ import io.alpa.pgnparser.enums.Nag;
 import io.alpa.pgnparser.model.ChessGame;
 import io.alpa.pgnparser.model.MoveNode;
 import java.util.*;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 /** Service for converting ChessGame objects to various PGN formats. */
 @Service
 public class PgnConversionService {
+
+  private static final Pattern COMMENT_BRACE_TRIM = Pattern.compile("(^[{}]+)|([{}]+$)");
 
   /**
    * Returns the mainline moves of a chess game as a list of MoveNode objects.
@@ -185,13 +188,13 @@ public class PgnConversionService {
       if (moveNode.getComment() != null
           && !moveNode.getComment().isBlank()
           && !usedComments.contains(moveNode)) {
-        String cleanComment = moveNode.getComment().replaceAll("(^[{}]+)|([{}]+$)", "");
+        String cleanComment = COMMENT_BRACE_TRIM.matcher(moveNode.getComment()).replaceAll("");
         sb.append(" {").append(cleanComment).append("} ");
         usedComments.add(moveNode);
       }
 
-      if (!sb.toString().endsWith(" ")) {
-        sb.append(" ");
+      if (sb.length() == 0 || sb.charAt(sb.length() - 1) != ' ') {
+        sb.append(' ');
       }
     }
 
