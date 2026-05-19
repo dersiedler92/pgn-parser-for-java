@@ -2,20 +2,13 @@ package io.alpa.pgnparser.model;
 
 import io.alpa.pgnparser.enums.Nag;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Represents a move in the move tree, including SAN, variations, NAGs, and move number.
- *
- * <p>Note: {@code equals}/{@code hashCode} use identity semantics (inherited from {@link Object}).
- * Including the recursive {@code nextNode}/{@code variationNodes} fields would cause linked-list
- * traversal on every comparison and break hash-based collections (see {@code usedComments} in
- * {@code PgnConversionService}). Identity equality is appropriate here because each parsed
- * {@code MoveNode} is a unique node in the move tree.
- */
+/** Represents a move in the move tree, including SAN, variations, NAGs, and move number. */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,4 +18,21 @@ public class MoveNode extends Node {
   private List<MoveNode> variationNodes;
   private List<Nag> nags;
   private int moveNumber;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof MoveNode moveNode)) return false;
+    return moveNumber == moveNode.moveNumber
+        && Objects.equals(san, moveNode.san)
+        && Objects.equals(comment, moveNode.comment)
+        && Objects.equals(nextNode, moveNode.nextNode)
+        && Objects.equals(variationNodes, moveNode.variationNodes)
+        && Objects.equals(nags, moveNode.nags);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(san, comment, nextNode, variationNodes, nags, moveNumber);
+  }
 }
