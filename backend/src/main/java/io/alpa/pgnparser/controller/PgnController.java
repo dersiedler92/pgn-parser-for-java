@@ -8,9 +8,12 @@ import io.alpa.pgnparser.model.ChessGame;
 import io.alpa.pgnparser.service.PgnConversionService;
 import io.alpa.pgnparser.service.PgnParsingService;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 /** REST controller for PGN parsing and conversion endpoints. */
 @RestController
@@ -19,17 +22,22 @@ public class PgnController implements PgnApi {
 
   private final PgnConversionService pgnConversionService;
   private final PgnParsingService pgnParsingService;
+  private final int maxPgnLength;
 
   /**
    * Constructs a new PgnController with required services.
    *
    * @param pgnConversionService service for PGN conversion
    * @param pgnParsingService service for PGN parsing
+   * @param maxPgnLength max allowed length of the PGN body (chars)
    */
   public PgnController(
-      PgnConversionService pgnConversionService, PgnParsingService pgnParsingService) {
+      PgnConversionService pgnConversionService,
+      PgnParsingService pgnParsingService,
+      @Value("${app.pgn.max-length:5000000}") int maxPgnLength) {
     this.pgnConversionService = pgnConversionService;
     this.pgnParsingService = pgnParsingService;
+    this.maxPgnLength = maxPgnLength;
   }
 
   /**
@@ -40,7 +48,8 @@ public class PgnController implements PgnApi {
    */
   @Override
   public ResponseEntity<SeparatedPgnResponse> convertPgnToSeparated(PgnRequest request) {
-    ChessGame chessGame = pgnParsingService.pgnToChessGame(request.getPgn());
+    String pgn = validatePgn(request);
+    ChessGame chessGame = pgnParsingService.pgnToChessGame(pgn);
     List<String> separatedPgn = pgnConversionService.getVariationsAsStrings(chessGame);
     SeparatedPgnResponse response = new SeparatedPgnResponse();
     response.setVariations(separatedPgn);
@@ -55,10 +64,24 @@ public class PgnController implements PgnApi {
    */
   @Override
   public ResponseEntity<CombinedPgnResponse> convertPgnToCombined(PgnRequest request) {
-    ChessGame chessGame = pgnParsingService.pgnToChessGame(request.getPgn());
+    String pgn = validatePgn(request);
+    ChessGame chessGame = pgnParsingService.pgnToChessGame(pgn);
     String combinedPgn = pgnConversionService.getCombinedPgn(chessGame);
     CombinedPgnResponse response = new CombinedPgnResponse();
     response.setCombined(combinedPgn);
     return ResponseEntity.ok(response);
+  }
+
+  private String validatePgn(PgnRequest request) {
+    String pgn = request == null ? null : request.getPgn();
+    if (pgn == null || pgn.isBlank()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "pgn is required");
+    }
+    if (pgn.length() > maxPgnLength) {
+      throw new ResponseStatusException(
+          HttpStatus.PAYLOAD_TOO_LARGE,
+          "pgn exceeds maximum allowed length of " + maxPgnLength + " characters");
+    }
+    return pgn;
   }
 }
